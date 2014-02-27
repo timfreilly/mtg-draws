@@ -1,4 +1,4 @@
-Tim Reilly --- Final Project ---- Winter 2012 ------ tim.f.reilly@gmail.com
+Tim Reilly ----- Final Project ------ Winter 2012+2014 ------- tfr@pdx.edu
 
 mtg.lhs
 
@@ -10,9 +10,6 @@ for graphing casting costs and determining potential plays.
 Currently, the only card types are Lands (and only basic lands) and Spells 
 (which groups Creatures/Instants/Sorceries/etc).  Card text is not accounted 
 for, only card name and casting cost.
-
-I'd love feedback on the structure of my code or other remarks.  Email would be
-great, but I could also pick up marked pages if that's easier.
 
 ---------------------------------------------------------------------------
 -------------        ---- Trying the library ----         -----------------
@@ -45,9 +42,9 @@ possiblePlays uses a list of cards and a list of mana symbols and shows all
 combinations of possible plays for a single turn.  Using it with showPlays,
 you can see a breakdown of every castable combination of cards.
 
-*MtG> showPlays $ possiblePlays [Spell "Loyal Cathar" [White,White], 
+*MtG> showPlays ( possiblePlays [Spell "Loyal Cathar" [White,White], 
 Spell "Selfless Cathar" [White], Spell "Voiceless Spirit" 
-[Colorless 2, White]] [White, White, White]
+[Colorless 2, White]] [White, White, White])
 
 Play 1
 ------
