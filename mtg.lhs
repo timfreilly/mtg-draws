@@ -284,8 +284,6 @@ Short Demos:
 BASIC DEFINITIONS
 -----------------
 
-TODO: X costs
-
 > data Card = Spell String ManaCost 
 >           | Land String ColorSymbol
 >           deriving (Show, Eq)
@@ -371,8 +369,6 @@ SHOWING CARDS
 
 TODO: I intend compile cardlist to replace multiples of a card with "x2" or "x3"
       Look at groupCosts for similar work.
-      
-TODO: Show Lands correctly and not way tabbed over.
       
 > showMC :: [ColorSymbol] -> String
 > showMC [] = "0"
@@ -568,8 +564,6 @@ TODO: Pure costs don't group well.  Might want CMCs too?
 SHUFFLING AND RANDOM DRAWS
 --------------------------
 
-TODO: Error handling when out of cards
-
 > randPair   :: a-> IO (Int,a)
 > randPair x  = do r <- (randomIO::IO Int)
 >                  return (r,x)
@@ -581,13 +575,14 @@ TODO: Error handling when out of cards
 >                         $ rps
 
 > draw    :: [Card] -> (Card, [Card])
+> draw []  = error "No cards in deck"
 > draw cs  = (head cs, tail cs)
 
 
 > draw'      :: [Card] -> Int -> ([Card],[Card])
 > draw' cs n  = if n <= length cs
 >                  then (take n cs, drop n cs)
->                  else (cs,[])
+>                  else error "Not enough cards in deck"
 
 
 MISC TEST CODE
