@@ -426,7 +426,7 @@ TODO: Create some show functions?
 
 > cost :: Card -> ManaCost
 > cost (Spell _ c) = c
-> cost (Land _ _) = [Colorless 0]
+> cost (Land _ _)  = []
 
 > cmcCard :: Card -> Int
 > cmcCard c = cmc (cost c)
