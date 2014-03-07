@@ -389,11 +389,11 @@ TODO: I intend compile cardlist to replace multiples of a card with "x2" or "x3"
 > compileCardList :: [Card] -> [String]
 > compileCardList cl = alignCosts' [ showCard c | c <- cl]
 
-
 > patchLine :: Int -> String -> (Int, String)
 > patchLine n cs = (length cs, cn ++ (replicate (1 + n - length cs) ' ') ++ mc)
->                         where cn = concat $ intersperse " " $ init $ words cs
->                               mc = last $ words cs
+>                     where ws = words cs
+>                           (cn, mc) | (length ws) == 1 = (cs,"")
+>                                    | otherwise = (unwords $ init $ ws, last ws)
 
 > alignCosts :: String -> String
 > alignCosts s  = unlines (map snd ps)
