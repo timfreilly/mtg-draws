@@ -308,8 +308,6 @@ BASIC DEFINITIONS
 READING AND CONVERTING
 ----------------------
 
-TODO: Handle error cases
-
 > readCost          :: String -> ManaCost
 > readCost ""       = []
 > readCost ('W':ss) = White : readCost ss
@@ -366,9 +364,6 @@ TODO: Handle error cases
 
 SHOWING CARDS
 -------------
-
-TODO: I intend compile cardlist to replace multiples of a card with "x2" or "x3"
-      Look at groupCosts for similar work.
       
 > showMC :: [ColorSymbol] -> String
 > showMC [] = "0"
@@ -414,10 +409,6 @@ DETERMINING CASTING COST AND CASTABILITY
 
 IDEA: Rewrite later code to use cmcCard instead of cmc? Only isCastable uses it,
       though it has its own chain of dependancies.
-      
-TODO: Find the plays with the best mana utilization
-
-TODO: Create some show functions?
 
 > cmc                  :: ManaCost -> Int
 > cmc []               = 0
@@ -480,11 +471,6 @@ TODO: Create some show functions?
 DETERMINING PLAYS
 -----------------
 
-TODO: Complete testing of totalCMC' and swap it with totalCMC
-
-TODO: Create a show function
-
-
 > allPlays  :: [Card] -> [[Card]]
 > allPlays h = subsequences h
 
@@ -528,11 +514,6 @@ efficientPlays h tm  = maximumBy (compare `on` totalCMC) (possiblePlays h tm)
 
 DETERMINING COST BREAKDOWN
 --------------------------
-
-TODO: Sorting by CMC isn't perfect for sorting pure costs.  Results like
-      like 1W WW 1W 1W are common, which result in imperfect groupings
-
-TODO: Pure costs don't group well.  Might want CMCs too?
 
 > costPairs :: [Card] -> [(ManaCost, Int)]
 > costPairs cl = [ (cost (head c), length c) | c <- groupCosts' cl]
