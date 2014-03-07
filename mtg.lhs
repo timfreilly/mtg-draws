@@ -407,9 +407,6 @@ SHOWING CARDS
 DETERMINING CASTING COST AND CASTABILITY
 ----------------------------------------
 
-IDEA: Rewrite later code to use cmcCard instead of cmc? Only isCastable uses it,
-      though it has its own chain of dependancies.
-
 > cmc                  :: ManaCost -> Int
 > cmc []               = 0
 > cmc (Colorless c:ss) = c + cmc ss
