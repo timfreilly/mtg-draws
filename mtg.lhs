@@ -477,15 +477,8 @@ DETERMINING PLAYS
 > isPlayCastable     :: [ColorSymbol] -> [Card] -> Bool
 > isPlayCastable tm h = isGroupCastable [ c | Spell _ c <- h] tm
 
-
-Q: Is there an alternative to always having to describe the empty list case?                         
-
 > totalCMC :: [Card] -> Int
-> totalCMC []  = 0
-> totalCMC (Spell n mc:h) = (cmc mc) + totalCMC h
-
-> totalCMC' :: [Card] -> Int
-> totalCMC' cs = sum (map (cmcCard) cs)
+> totalCMC cs = sum (map (cmcCard) cs)
 
 efficientPlays      :: [Card] -> [ColorSymbol] -> [[Card]]
 efficientPlays h tm  = maximumBy (compare `on` totalCMC) (possiblePlays h tm)
