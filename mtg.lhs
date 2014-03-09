@@ -166,7 +166,7 @@ if the entire cost was colorless.  For example, "2WUB" would be 5.
 *cmcCard* is a hybrid of cmc and cost as it takes a card, rather than a 
 ManaCost, and find the cmc.  I'm debating rewriting the code to go through cmc
 exclusively, as I found it natural to work exclusively with cards.  Having to 
-extract the ManaCost frequently got a bit tedious.
+extract the ManaCost got tedious. *cmcCards* is a map shortcut.
 
 *sameCost* is a function that determines if two cards have the same cost, and
 not just the same cmc.
@@ -174,6 +174,7 @@ not just the same cmc.
 >     cmc,                  -- ManaCost -> Int
 >     cost,                 -- Card -> ManaCost
 >     cmcCard,              -- Card -> Int
+>     cmcCards,             -- [Card] -> [Int]
 >     sameCost,             -- Card -> Card -> Bool
 
 *totalMana* combines all of the costs of a list of cards.  This required a bit
@@ -419,6 +420,9 @@ DETERMINING CASTING COST AND CASTABILITY
 
 > cmcCard :: Card -> Int
 > cmcCard c = cmc (cost c)
+
+> cmcCards   :: [Card] -> [Int]
+> cmcCards cs = map cmcCard cs
 
 > sameCost :: Card -> Card -> Bool
 > sameCost c1 c2 = cost c1 == cost c2
