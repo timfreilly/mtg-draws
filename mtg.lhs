@@ -570,6 +570,13 @@ SHUFFLING AND RANDOM DRAWS
 >                  else error "Not enough cards in deck"
 
 
+DECK COMPOSITION AND PREDICTION
+-------------------------------
+
+> remainingDeck       :: [Card] -> [Card] -> [Card]
+> remainingDeck kcs dl = dl \\ kcs
+
+
 MISC TEST CODE
 --------------
 
@@ -599,10 +606,29 @@ TODO: Cost breakdown demo
 > alignTest :: IO ()
 > alignTest = readFile "cards.mtg" >>= (putStr . alignCosts)
 
-I use the following for a variety of testing purposes
+The following is useful for out-of-IO testing of deck stuff
 
-> cs = map readCard ["Loyal Cathar; WW", "Selfless Cathar; W", "Sanctuary Cat; W", 
->                      "Unruly Mob; 1W", "Chapel Geist; 1WW", "Plains"]
+> tDB = [Spell "Abbey Griffin" [Colorless 3,White],Spell "Angel of Flight Alabaster" [Colorless 4,White],
+>        Spell "Angelic Overseer" [Colorless 3,White,White],Spell "Avacynian Priest" [Colorless 1,White],
+>        Spell "Champion of the Parish" [White],Spell "Chapel Geist" [Colorless 1,White,White],
+>        Spell "Cloistered Youth" [Colorless 1,White],Spell "Dearly Departed" [Colorless 4,White,White],
+>        Spell "Doomed Traveler" [White],Spell "Elder Cathar" [Colorless 2,White],
+>        Spell "Elite Inquisitor" [White,White],Spell "Fiend Hunter" [Colorless 1,White,White],
+>        Spell "Gallows Warden" [Colorless 4,White],Spell "Geist-Honored Monk" [Colorless 3,White,White],
+>        Spell "Loyal Cathar" [White,White],Spell "Mausoleum Guard" [Colorless 3,White],
+>        Spell "Mentor of the Meek" [Colorless 2,White],Spell "Sanctuary Cat" [White],
+>        Spell "Selfless Cathar" [White],Spell "Silverchase Fox" [Colorless 1,White],
+>        Spell "Slayer of the Wicked" [Colorless 3,White],Spell "Spectral Rider" [White,White],
+>        Spell "Thraben Purebloods" [Colorless 4,White],Spell "Thraben Sentry" [Colorless 3,White],
+>        Spell "Unruly Mob" [Colorless 1,White],Spell "Village Bell-Ringer" [Colorless 2,White],
+>        Spell "Voiceless Spirit" [Colorless 2,White],Land "Plains" White]
+
+> tHand = map readCard ["Loyal Cathar; WW", "Selfless Cathar; W", "Sanctuary Cat; W", 
+>                       "Unruly Mob; 1W", "Chapel Geist; 1WW", "Plains"]
+
+> tDeck = readDecklist tDB ["Doomed Traveler x4","Elite Inquisitor x2",
+>          "Loyal Cathar x2","Selfless Cathar x1","Sanctuary Cat x1",
+>          "Chapel Geist x4","Unruly Mob x2","Plains x44"]
 
 > minideck =  ["Loyal Cathar","Loyal Cathar","Loyal Cathar","Selfless Cathar",
 >                 "Unruly Mob","Unruly Mob","Chapel Geist","Sanctuary Cat",
