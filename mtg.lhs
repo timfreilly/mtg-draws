@@ -514,23 +514,29 @@ DETERMINING COST BREAKDOWN
 --------------------------
 
 > costPairs :: [Card] -> [(ManaCost, Int)]
-> costPairs cl = [ (cost (head c), length c) | c <- groupCosts' cl]
+> costPairs cl = [ (cost (head c), length c) | c <- groupCosts cl]
+
+> cmcPairs :: [Card] -> [(Int, Int)]
+> cmcPairs cl = [ (head c, length c) | c <- groupBy (==) $ sort $ cmcCards cl]
 
 > costPercentages :: [Card] -> [(ManaCost, Double)]
 > costPercentages cl = [ (mc, (fromIntegral n)/(fromIntegral (length cl))) 
 >                         | (mc, n) <- costPairs cl]
 
 > groupCosts :: [Card] -> [[Card]]
-> groupCosts cs = groupBy (sameCost) cs
-
-> groupCosts' :: [Card] -> [[Card]]
-> groupCosts' cs = groupBy (sameCost) (sortBy (compare `on` cmcCard) cs)
+> groupCosts cs = groupBy (sameCost) (sortBy (compare `on` cmcCard) cs)
 
 > showCostPairs :: [Card] -> IO ()
 > showCostPairs cl = do let cps = costPairs cl
 >                       let ls = alignCosts' [ showMC mc ++ " " ++ show q 
 >                                 | (mc, q) <- cps] 
 >                       mapM_ putStrLn ls
+
+> showCmcPairs :: [Card] -> IO ()
+> showCmcPairs cl = do let cps = cmcPairs cl
+>                      let ls = alignCosts' [ show c ++ " " ++ show q 
+>                                 | (c, q) <- cps] 
+>                      mapM_ putStrLn ls
 
 > showCostPercentages :: [Card] -> IO ()
 > showCostPercentages cl = do let cps = costPercentages cl
