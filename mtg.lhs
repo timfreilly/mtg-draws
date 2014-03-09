@@ -188,7 +188,7 @@ be useful.
 mana cost is castable with a given mana pool.  I thought I might have to use
 things like possibleMana to achieve this, but it turns out that if you have 
 enough total mana and your needed colors are a subset of your available colors,
-you know you can cast the spell.
+you know you can cast the spell. *isCastableCard* is the same, but with cards.
 
 *meetsColorReq* uses *stripColorless* and *isColorSubset* to determine if a mana
 cost is a subset of a particular mana pool.
@@ -203,6 +203,7 @@ rewriting but would make the library significantly easier to use.
 >     totalMana,            -- [Card] -> [ColorSymbol]
 >     possibleMana,         -- [ColorSymbol] -> [[ColorSymbol]]
 >     isCastable,           -- ManaCost -> [ColorSymbol] -> Bool
+>     isCastableCard,       -- Card -> [ColorSymbol] -> Bool
 >     meetsColorReq,        -- ManaCost -> [ColorSymbol] -> Bool
 >     stripColorless,       -- ManaCost -> ManaCost
 >     isColorSubset,        -- [ColorSymbol] -> [ColorSymbol] -> Bool
@@ -435,6 +436,9 @@ DETERMINING CASTING COST AND CASTABILITY
 
 > isCastable :: ManaCost -> [ColorSymbol] -> Bool
 > isCastable mc tm = (cmc mc) <= (cmc tm) && meetsColorReq mc tm
+
+> isCastableCard     :: Card -> [ColorSymbol] -> Bool
+> isCastableCard c tm = (cmcCard c) <= (cmc tm) && meetsColorReq (cmcCard c) tm
 
 > meetsColorReq :: ManaCost -> [ColorSymbol] -> Bool
 > meetsColorReq mc tm = isColorSubset (stripColorless mc) (stripColorless tm)
