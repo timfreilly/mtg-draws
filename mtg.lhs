@@ -438,7 +438,7 @@ DETERMINING CASTING COST AND CASTABILITY
 > isCastable mc tm = (cmc mc) <= (cmc tm) && meetsColorReq mc tm
 
 > isCastableCard     :: Card -> [ColorSymbol] -> Bool
-> isCastableCard c tm = (cmcCard c) <= (cmc tm) && meetsColorReq (cmcCard c) tm
+> isCastableCard c tm = (cmcCard c) <= (cmc tm) && meetsColorReq (cost c) tm
 
 > meetsColorReq :: ManaCost -> [ColorSymbol] -> Bool
 > meetsColorReq mc tm = isColorSubset (stripColorless mc) (stripColorless tm)
