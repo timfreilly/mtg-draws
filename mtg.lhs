@@ -96,15 +96,15 @@ symbol and are used to create mana.
 *Hand* and *Deck* are aliases of lists of cards, though the names would be more
 useful if the library was expanded further.
 
-*ColorSymbol* is either one of the five colors or "Colorless x", where x is
-an integer of colorless mana.  This is done to best reflect how Magic costs
+*ColorSymbol* is one of the five colors, "Colorless x", where x is an integer of
+colorless mana or an "X" cost.  This is done to best reflect how Magic costs
 are actually written and used.  *ManaCost* is a list of ColorSymbols. Every
 Spell has a ManaCost, even if it is empty.
 
 >     Card(Spell,Land),     -- Spell and Land are constructors
 >     Hand,                 -- [Card]
 >     Deck,                 -- [Card]
->     ColorSymbol(Colorless, White, Blue, Black, Red, Green),
+>     ColorSymbol(Ecks, Colorless, White, Blue, Black, Red, Green),
 >     ManaCost,             -- [ColorSymbol]
     
 Reading and Converting:
@@ -159,7 +159,9 @@ Determining Casting Cost and Castability:
 -----------------------------------------
 
 *cmc* finds the "Converted Mana Cost", a term that refers to the cost of a card
-if the entire cost was colorless.  For example, "2WUB" would be 5.
+if the entire cost was colorless.  For example, "2WUB" would be 5. X costs are
+treated as zero, per MTG's rules, though it isn't smart enough to spend higher
+than 0 values when trying to maximize mana.
 
 *cost* simply extracts the cost of a card.
 
@@ -297,14 +299,15 @@ BASIC DEFINITIONS
 > type ManaCost = [ColorSymbol]
 
 > instance Show ColorSymbol where
+>   show Ecks  = "X"
 >   show (Colorless i) = show i
 >   show White = "W"
->   show Blue = "U"
+>   show Blue  = "U"
 >   show Black = "B"
->   show Red = "R"
+>   show Red   = "R"
 >   show Green = "G"
 
-> data ColorSymbol = Colorless Int | White | Blue | Black | Red | Green 
+> data ColorSymbol = Ecks | Colorless Int | White | Blue | Black | Red | Green 
 >                  deriving (Eq, Ord)
 
 READING AND CONVERTING
@@ -313,10 +316,11 @@ READING AND CONVERTING
 > readCost          :: String -> ManaCost
 > readCost ""       = []
 > readCost ('W':ss) = White : readCost ss
-> readCost ('U':ss) = Blue : readCost ss
+> readCost ('U':ss) = Blue  : readCost ss
 > readCost ('B':ss) = Black : readCost ss
-> readCost ('R':ss) = Red : readCost ss
+> readCost ('R':ss) = Red   : readCost ss
 > readCost ('G':ss) = Green : readCost ss
+> readCost ('X':ss) = Ecks  : readCost ss
 > readCost  ( d:ss) = Colorless (digitToInt d) : readCost ss
 
 > readCard   :: String -> Card
@@ -411,6 +415,7 @@ DETERMINING CASTING COST AND CASTABILITY
 
 > cmc                  :: ManaCost -> Int
 > cmc []               = 0
+> cmc (Ecks:ss)        = cmc ss
 > cmc (Colorless c:ss) = c + cmc ss
 > cmc (s:ss)           = 1 + cmc ss
 
@@ -448,6 +453,7 @@ DETERMINING CASTING COST AND CASTABILITY
 > meetsColorReq mc tm = isColorSubset (stripColorless mc) (stripColorless tm)
 
 > stripColorless :: ManaCost -> ManaCost
+> stripColorless (Ecks:ss) = ss
 > stripColorless (Colorless i:ss) = ss
 > stripColorless ss = ss
 
@@ -616,7 +622,8 @@ The following is useful for out-of-IO testing of deck stuff
 >        Spell "Elite Inquisitor" [White,White],Spell "Fiend Hunter" [Colorless 1,White,White],
 >        Spell "Gallows Warden" [Colorless 4,White],Spell "Geist-Honored Monk" [Colorless 3,White,White],
 >        Spell "Loyal Cathar" [White,White],Spell "Mausoleum Guard" [Colorless 3,White],
->        Spell "Mentor of the Meek" [Colorless 2,White],Spell "Sanctuary Cat" [White],
+>        Spell "Mentor of the Meek" [Colorless 2,White],Spell "Mikaeus, the Lunarch" [Ecks,White],
+>        Spell "Sanctuary Cat" [White],
 >        Spell "Selfless Cathar" [White],Spell "Silverchase Fox" [Colorless 1,White],
 >        Spell "Slayer of the Wicked" [Colorless 3,White],Spell "Spectral Rider" [White,White],
 >        Spell "Thraben Purebloods" [Colorless 4,White],Spell "Thraben Sentry" [Colorless 3,White],
@@ -629,7 +636,7 @@ The following is useful for out-of-IO testing of deck stuff
 > tDeck = readDecklist tDB ["Doomed Traveler x4","Elite Inquisitor x2",
 >          "Loyal Cathar x4","Selfless Cathar x2","Sanctuary Cat x2",
 >          "Chapel Geist x4","Unruly Mob x4","Thraben Sentry x2","Angelic Overseer x1",
->          "Angel of Flight Alabaster x1","Mausoleum Guard x3","Voiceless Spirit x3",
+>          "Mikaeus, the Lunarch x1","Mausoleum Guard x3","Voiceless Spirit x3",
 >          "Silverchase Fox x3","Plains x25"]
 
 > minideck =  ["Loyal Cathar","Loyal Cathar","Loyal Cathar","Selfless Cathar",
