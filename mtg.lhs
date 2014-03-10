@@ -573,8 +573,8 @@ SHUFFLING AND RANDOM DRAWS
 DECK COMPOSITION AND PREDICTION
 -------------------------------
 
-> remainingDeck       :: [Card] -> [Card] -> [Card]
-> remainingDeck kcs dl = dl \\ kcs
+> remaining       :: [Card] -> [Card] -> [Card]
+> remaining kcs dl = dl \\ kcs
 
 
 MISC TEST CODE
@@ -627,8 +627,10 @@ The following is useful for out-of-IO testing of deck stuff
 >                       "Unruly Mob; 1W", "Chapel Geist; 1WW", "Plains"]
 
 > tDeck = readDecklist tDB ["Doomed Traveler x4","Elite Inquisitor x2",
->          "Loyal Cathar x2","Selfless Cathar x1","Sanctuary Cat x1",
->          "Chapel Geist x4","Unruly Mob x2","Plains x44"]
+>          "Loyal Cathar x4","Selfless Cathar x2","Sanctuary Cat x2",
+>          "Chapel Geist x4","Unruly Mob x4","Thraben Sentry x2","Angelic Overseer x1",
+>          "Angel of Flight Alabaster x1","Mausoleum Guard x3","Voiceless Spirit x3",
+>          "Silverchase Fox x3","Plains x25"]
 
 > minideck =  ["Loyal Cathar","Loyal Cathar","Loyal Cathar","Selfless Cathar",
 >                 "Unruly Mob","Unruly Mob","Chapel Geist","Sanctuary Cat",
