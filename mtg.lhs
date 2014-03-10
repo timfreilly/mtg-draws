@@ -614,6 +614,14 @@ TODO: Cost breakdown demo
 
 The following is useful for out-of-IO testing of deck stuff
 
+> tCosts = [[Colorless 3,White],[Colorless 2,White,White],
+>           [Colorless 1,White,White,White],[Colorless 3,White],
+>           [Colorless 3,White],[Colorless 4],[Colorless 3,White]]
+
+> tCosts2 = [[Colorless 3,White],[Colorless 2,White,White],
+>            [White,White,White],[Colorless 6,White],
+>            [Colorless 3,White],[Colorless 2],[White]]
+
 > tDB = [Spell "Abbey Griffin" [Colorless 3,White],Spell "Angel of Flight Alabaster" [Colorless 4,White],
 >        Spell "Angelic Overseer" [Colorless 3,White,White],Spell "Avacynian Priest" [Colorless 1,White],
 >        Spell "Champion of the Parish" [White],Spell "Chapel Geist" [Colorless 1,White,White],
