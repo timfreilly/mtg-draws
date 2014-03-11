@@ -483,13 +483,19 @@ DETERMINING PLAYS
 -----------------
 
 > allPlays  :: [Card] -> [[Card]]
-> allPlays h = subsequences h
+> allPlays h = filter oneLandOrLess (subsequences h)
+
+> oneLandOrLess :: [Card] -> Bool
+> oneLandOrLess cs = olol cs 0
+>            where olol [] seen = seen <= 1
+>                  olol  (Land _ _:cs) seen = olol cs (seen+1)
+>                  olol (Spell _ _:cs) seen = olol cs seen
 
 > possiblePlays     :: [Card] -> [ColorSymbol] -> [[Card]]
 > possiblePlays h tm = filter (isPlayCastable tm) (allPlays h)
 
 > isPlayCastable     :: [ColorSymbol] -> [Card] -> Bool
-> isPlayCastable tm h = isGroupCastable [ c | Spell _ c <- h] tm
+> isPlayCastable tm h = isGroupCastable [ c | Spell _ c <- h] (tm++[s | Land _ s <- h])
 
 > totalCMC :: [Card] -> Int
 > totalCMC cs = sum (map (cmcCard) cs)
@@ -668,7 +674,7 @@ The following is useful for out-of-IO testing of deck stuff
 >        Spell "Voiceless Spirit" [Colorless 2,White],Land "Plains" White]
 
 > tHand = map readCard ["Loyal Cathar; WW", "Selfless Cathar; W", "Sanctuary Cat; W", 
->                       "Unruly Mob; 1W", "Chapel Geist; 1WW", "Plains"]
+>                       "Unruly Mob; 1W", "Chapel Geist; 1WW", "Plains", "Island"]
 
 > tDeck = readDecklist tDB ["Doomed Traveler x4","Elite Inquisitor x2",
 >          "Loyal Cathar x4","Selfless Cathar x2","Sanctuary Cat x2",
