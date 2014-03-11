@@ -575,6 +575,12 @@ SHUFFLING AND RANDOM DRAWS
 >                  then (take n cs, drop n cs)
 >                  else error "Not enough cards in deck"
 
+> draw7FromDeck   :: String -> IO ([Card],[Card])
+> draw7FromDeck dn = do db <- readCardFile "cards.mtg"
+>                       deck <- readDeckFile db dn
+>                       sDeck <- shuffle deck
+>                       return (draw' sDeck 7)
+
 
 DECK COMPOSITION AND PREDICTION
 -------------------------------
@@ -620,20 +626,17 @@ TODO: Cost breakdown demo
 >                          cs <- readDeckFile db "weenie.deck"
 >                          showDeckList cs
 
-> drawSeven :: IO ()
-> drawSeven = do db <- readCardFile "cards.mtg"
->                cs <- readDeckFile db "weenie.deck"
->                deck <- shuffle cs
->                let (hand, deck2) = draw' deck 7
->                showCardList hand
+> drawSevenDemo :: IO ()
+> drawSevenDemo = do (hand, deck2) <- draw7FromDeck "weenie.deck"
+>                    showCardList hand
 
-> drawSevenNextIsPlains :: IO()
-> drawSevenNextIsPlains  = do db <- readCardFile "cards.mtg"
->                             cs <- readDeckFile db "weenie.deck"
->                             deck <- shuffle cs
->                             let (hand, deck2) = draw' deck 7
->                             let chance = chanceOfCard (Land "Plains" White) deck2
->                             print chance
+> drawSevenNextIsPlainsDemo :: IO()
+> drawSevenNextIsPlainsDemo  = do (hand, deck2) <- draw7FromDeck "weenie.deck"
+>                                 putStrLn "Hand:\n-----"
+>                                 showCardList hand
+>                                 let chance = chanceOfCard (Land "Plains" White) deck2
+>                                 putStrLn "\nChance of Plains being next:"
+>                                 print chance
 
 
 > alignTest :: IO ()
