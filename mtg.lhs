@@ -218,10 +218,10 @@ Determining Plays:
 ------------------
 
 *allPlays* finds all possible play combinations given a list of cards. It 
-ignores the costs of the cards.
+ignores the costs of the cards but it will obey the one land per turn rule.
 
 *possiblePlays* finds all the plays that are castable with a certain amount
-of total mana. It uses isPlayCastable to filter the list.
+of total mana (plus land drop). It uses isPlayCastable to filter the list.
 
 *isPlayCastable* basically just uses isGroupCastable.  It could probably
 disappear with some reworking.
@@ -229,9 +229,11 @@ disappear with some reworking.
 *totalCMC* finds the total cmc of a list of Cards.  It could probably be removed
 with some reworking in the casting cost area.
 
-*highestPlay* finds a play that the most possible mana.  I'd like to also
-implement a similar function which finds all of the most expensive, rather than 
-just one.
+*efficientPlay* finds the plays using the most possible mana.  Given that extra
+mana allows for a wider range of plays, this will also tend to play a land
+
+*makePlay* subtracts cards from a play from your hand, then returns a tuple
+containing the separated "in play" cards from "in hand" cards.
 
 *showPlays* is a nicely formatted way for showing possible plays.
 
@@ -239,7 +241,8 @@ just one.
 >     possiblePlays,        -- [Card] -> [ColorSymbol] -> [[Card]]
 >     isPlayCastable,       -- [ColorSymbol] -> [Card] -> Bool
 >     totalCMC,             -- [Card] -> Int
->     highestPlay,          -- [Card] -> [ColorSymbol] -> [Card]
+>     efficientPlays,       -- [Card] -> [ColorSymbol] -> [[Card]]
+>     makePlay,             -- [Card] -> [Card] -> ([Card],[Card])
 >     showPlays,            -- [[Card]] -> IO ()
 
 Determining Cost Breakdown:
@@ -505,8 +508,8 @@ DETERMINING PLAYS
 >                   where pps = possiblePlays h tm
 >                         highPs = maximum $ map totalCMC pps
 
-> highestPlay      :: [Card] -> [ColorSymbol] -> [Card]
-> highestPlay h tm  = maximumBy (compare `on` totalCMC) (possiblePlays h tm)
+> makePlay :: [Card] -> [Card] -> ([Card],[Card])
+> makePlay h p = (p,(h \\ p))
 
 > showPlays    :: [[Card]] -> IO ()
 > showPlays ps  = do let ls = map showPlay (enumPlays ps)
