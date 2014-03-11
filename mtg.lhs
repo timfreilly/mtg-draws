@@ -256,13 +256,13 @@ costs.
 
 Shuffling and Random Draws:
 
-*shuffle* works on any list to randomly rearrange it.  *draw* and *draw'* 
+*shuffle* works on any list to randomly rearrange it.  *draw* and *drawN* 
 take cards off the top and return a pair containing the drawn cards and the
 remaining deck.
 
 >     shuffle,               -- [a] -> IO [a]
 >     draw,                  -- [Card] -> (Card, [Card])
->     draw',                 -- [Card] -> Int -> ([Card],[Card])
+>     drawN,                 -- [Card] -> Int -> ([Card],[Card])
 
 Short Demos:
 
@@ -570,8 +570,8 @@ SHUFFLING AND RANDOM DRAWS
 > draw cs  = (head cs, tail cs)
 
 
-> draw'      :: [Card] -> Int -> ([Card],[Card])
-> draw' cs n  = if n <= length cs
+> drawN      :: [Card] -> Int -> ([Card],[Card])
+> drawN cs n  = if n <= length cs
 >                  then (take n cs, drop n cs)
 >                  else error "Not enough cards in deck"
 
@@ -579,7 +579,7 @@ SHUFFLING AND RANDOM DRAWS
 > draw7FromDeck dn = do db <- readCardFile "cards.mtg"
 >                       deck <- readDeckFile db dn
 >                       sDeck <- shuffle deck
->                       return (draw' sDeck 7)
+>                       return (drawN sDeck 7)
 
 
 DECK COMPOSITION AND PREDICTION
