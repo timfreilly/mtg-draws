@@ -494,11 +494,10 @@ DETERMINING PLAYS
 > totalCMC :: [Card] -> Int
 > totalCMC cs = sum (map (cmcCard) cs)
 
-efficientPlays      :: [Card] -> [ColorSymbol] -> [[Card]]
-efficientPlays h tm  = maximumBy (compare `on` totalCMC) (possiblePlays h tm)
-
-^--Whoops this only returns one play, instead of all the highest plays
-
+> efficientPlays      :: [Card] -> [ColorSymbol] -> [[Card]]
+> efficientPlays h tm  = filter ((highPs==) . totalCMC) pps
+>                   where pps = possiblePlays h tm
+>                         highPs = maximum $ map totalCMC pps
 
 > highestPlay      :: [Card] -> [ColorSymbol] -> [Card]
 > highestPlay h tm  = maximumBy (compare `on` totalCMC) (possiblePlays h tm)
