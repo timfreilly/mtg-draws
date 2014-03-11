@@ -582,6 +582,18 @@ DECK COMPOSITION AND PREDICTION
 > remaining       :: [Card] -> [Card] -> [Card]
 > remaining kcs dl = dl \\ kcs
 
+> chanceOf        :: (Card -> Bool) -> [Card] -> Double
+> chanceOf cond cs = (fromIntegral (length (filter cond cs))) / (fromIntegral (length cs))
+
+> chanceOfCmc  :: Int -> [Card] -> Double
+> chanceOfCmc i = chanceOf ((i==) . cmcCard)
+
+> chanceOfCard  :: Card -> [Card] -> Double
+> chanceOfCard c = chanceOf (c==)
+
+> chanceOfCards :: [Card] -> [Card] -> Double
+> chanceOfCards cs = chanceOf (`elem` cs)
+
 
 MISC TEST CODE
 --------------
@@ -607,7 +619,22 @@ TODO: Cost breakdown demo
 > readAndShowDecklist = do db <- readCardFile "cards.mtg"
 >                          cs <- readDeckFile db "weenie.deck"
 >                          showDeckList cs
-                    
+
+> drawSeven :: IO ()
+> drawSeven = do db <- readCardFile "cards.mtg"
+>                cs <- readDeckFile db "weenie.deck"
+>                deck <- shuffle cs
+>                let (hand, deck2) = draw' deck 7
+>                showCardList hand
+
+> drawSevenNextIsPlains :: IO()
+> drawSevenNextIsPlains  = do db <- readCardFile "cards.mtg"
+>                             cs <- readDeckFile db "weenie.deck"
+>                             deck <- shuffle cs
+>                             let (hand, deck2) = draw' deck 7
+>                             let chance = chanceOfCard (Land "Plains" White) deck2
+>                             print chance
+
 
 > alignTest :: IO ()
 > alignTest = readFile "cards.mtg" >>= (putStr . alignCosts)
