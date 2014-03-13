@@ -537,8 +537,10 @@ DETERMINING COST BREAKDOWN
 > costPercentages cl = [ (mc, (fromIntegral n)/(fromIntegral (length cl))) 
 >                         | (mc, n) <- costPairs cl]
 
-> groupCosts :: [Card] -> [[Card]]
-> groupCosts cs = groupBy (sameCost) (sortBy (compare `on` cmcCard) cs)
+> groupCosts :: [Card] -> [[Card]] 
+> groupCosts cs = groupBy (sameCost) [ thatCmc | x <- [0..10], thatCmc <- costFilt x cs]
+>             where costComp = (compare `on` cost)
+>                   costFilt x cs = sortBy (costComp) (filter ((x==) . cmcCard) cs) 
 
 > showCostPairs :: [Card] -> IO ()
 > showCostPairs cl = do let cps = costPairs cl
