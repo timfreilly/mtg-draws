@@ -293,7 +293,7 @@ BASIC DEFINITIONS
 
 > data Card = Spell String ManaCost 
 >           | Land String ColorSymbol
->           deriving (Show, Eq)
+>           deriving (Show, Eq, Ord)
 
 > type Hand = [Card]
 
@@ -426,6 +426,10 @@ DETERMINING CASTING COST AND CASTABILITY
 > cost (Spell _ c) = c
 > cost (Land _ _)  = []
 
+> cName :: Card -> String
+> cName (Spell n _) = n
+> cName (Land n _)  = n
+
 > cmcCard :: Card -> Int
 > cmcCard c = cmc (cost c)
 
@@ -486,7 +490,7 @@ DETERMINING PLAYS
 -----------------
 
 > allPlays  :: [Card] -> [[Card]]
-> allPlays h = filter oneLandOrLess (subsequences h)
+> allPlays h = nubBy areSamePlay $ filter oneLandOrLess (subsequences h)
 
 > oneLandOrLess :: [Card] -> Bool
 > oneLandOrLess cs = olol cs 0
@@ -496,6 +500,13 @@ DETERMINING PLAYS
 
 > possiblePlays     :: [Card] -> [ColorSymbol] -> [[Card]]
 > possiblePlays h tm = filter (isPlayCastable tm) (allPlays h)
+
+> areSamePlay             :: [Card] -> [Card] -> Bool
+> areSamePlay play1 play2  = asp (sort play1) (sort play2)
+>               where asp (c1:cs1) (c2:cs2) = ((cName c1) == (cName c2)) && (asp cs1 cs2)
+>                     asp [] [] = True
+>                     asp p1 [] = False
+>                     asp [] p2 = False
 
 > isPlayCastable     :: [ColorSymbol] -> [Card] -> Bool
 > isPlayCastable tm h = isGroupCastable [ c | Spell _ c <- h] (tm++[s | Land _ s <- h])
@@ -620,12 +631,12 @@ MISC TEST CODE
 >               White], Spell "Thraben Sentry" [Colorless 3, White]] 
 >               [White, White, Blue]
 
-> costDemo = showCostPercentages [Spell "Loyal Cathar" [White,White], 
->               Spell "Selfless Cathar" [White], Spell "Voiceless Spirit" 
->               [Colorless 2, White], Spell "Moment of Heroism" [Colorless 1,
->               White], Spell "Thraben Sentry" [Colorless 3, White]] 
+> percentDemo = showCostPercentages [Spell "Loyal Cathar" [White,White], 
+>                 Spell "Selfless Cathar" [White], Spell "Voiceless Spirit" 
+>                 [Colorless 2, White], Spell "Moment of Heroism" [Colorless 1,
+>                 White], Spell "Thraben Sentry" [Colorless 3, White]] 
 
-TODO: Cost breakdown demo
+> costDemo = showCostPairs tDB
 
 > readAndShowCards :: IO ()
 > readAndShowCards  = do cards <- readCardFile "cards.mtg"
@@ -648,6 +659,12 @@ TODO: Cost breakdown demo
 >                                 putStrLn "\nChance of Plains being next:"
 >                                 print chance
 
+> draw7ShowPlays :: IO ()
+> draw7ShowPlays = do (hand, deck) <- draw7FromDeck "weenie.deck"
+>                     putStrLn "Hand:\n-----"
+>                     showCardList hand
+>                     putStrLn "\nPlays:"
+>                     showPlays $ possiblePlays hand []
 
 > alignTest :: IO ()
 > alignTest = readFile "cards.mtg" >>= (putStr . alignCosts)
