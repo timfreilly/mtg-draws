@@ -308,8 +308,8 @@ Short Demos:
 >     playsDemo,             -- Shows example output from showPlays
 >     readAndShowCards,      -- Reads from cards.mtg and outputs them.
 >     readAndShowDecklist,   -- Reads decklist and matches it against cards.mtg
->     drawSevenDemo          -- Reads the decklist, shuffles, and draws 7
->     drawSevenNextIsPlainsDemo -- Shows the odds that you'll get a Plains
+>     drawSevenDemo,          -- Reads the decklist, shuffles, and draws 7
+>     drawSevenNextIsPlainsDemo, -- Shows the odds that you'll get a Plains
 >     draw7ShowPlays         -- Shows the available plays on a fresh draw
                         
 >  ) where
