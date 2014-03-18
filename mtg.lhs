@@ -12,6 +12,25 @@ Currently, the only card types are Lands (and only basic lands) and Spells
 for, only card name and casting cost.
 
 ---------------------------------------------------------------------------
+-------------        ---- Changes Since 2012 ----         -----------------
+---------------------------------------------------------------------------
+
+I elected to take FunLangs a second time and use the opportunity to work on
+my project some more.  Here is an overview of what is new:
+
+ - Many small bugfixes/rule fixes. Things like the real CMC of Lands,
+   ordering of costs so that they group well, etc.
+ - More convenience functions for extracting information from Cards, hands,
+   ManaCosts, etc.
+ - More ways to work with plays, especially efficient plays. Also started
+   work on ways of taking repeated turns.
+ - Drawing from a random deck is much more convenient.
+ - Some preliminary ways of assessing odds of particular outcomes were
+   added. As a Magic player, I actually started to glean useful insights
+   from this information. All it took me was hours and hours of messing
+   around with code!
+
+---------------------------------------------------------------------------
 -------------        ---- Trying the library ----         -----------------
 ---------------------------------------------------------------------------
 
@@ -235,6 +254,9 @@ mana allows for a wider range of plays, this will also tend to play a land
 *makePlay* subtracts cards from a play from your hand, then returns a tuple
 containing the separated "in play" cards from "in hand" cards.
 
+*takeTurn* is some preliminary work on inputting and processing the results
+of a computer-driven turn.
+
 *showPlays* is a nicely formatted way for showing possible plays.
 
 >     allPlays,             -- [Card] -> [[Card]]
@@ -243,16 +265,17 @@ containing the separated "in play" cards from "in hand" cards.
 >     totalCMC,             -- [Card] -> Int
 >     efficientPlays,       -- [Card] -> [ColorSymbol] -> [[Card]]
 >     makePlay,             -- [Card] -> [Card] -> ([Card],[Card])
+>     takeTurn,             -- ([Card],[Card],[Card])
 >     showPlays,            -- [[Card]] -> IO ()
 
 Determining Cost Breakdown:
 
 *costPairs* groups a list of cards by cost and shows the count and has a
-show function to go with it. *costPercentages* is similar.  Both versions 
-are somewhat buggy in that the grouping function does not perfectly sort
-costs.
+show function to go with it. *cmcPairs* and *costPercentages* are similar
+but for their obvious differences.
 
 >     costPairs,            -- [Card] -> [(ManaCost, Int)]
+>     cmcPairs,             -- [Card] -> [(Int, Int)]
 >     costPercentages,      -- [Card] -> [(ManaCost, Double)]
 >     showCostPairs,        -- [Card] -> IO ()
 >     showCostPercentages,  -- [Card] -> IO ()
@@ -261,17 +284,33 @@ Shuffling and Random Draws:
 
 *shuffle* works on any list to randomly rearrange it.  *draw* and *drawN* 
 take cards off the top and return a pair containing the drawn cards and the
-remaining deck.
+remaining deck. *draw7FromDeck* goes the extra mile and makes a fresh hand
+and deck to mess around with.
 
 >     shuffle,               -- [a] -> IO [a]
 >     draw,                  -- [Card] -> (Card, [Card])
 >     drawN,                 -- [Card] -> Int -> ([Card],[Card])
+>     draw7FromDeck,         -- String -> IO ([Card],[Card])
+
+Deck Composition and Prediction:
+
+I think *chanceOf* has a lot of potential, and I've included three special
+case functions to give some ideas of how it could be use.
+
+>     chanceOf,              -- (Card -> Bool) -> [Card] -> Double
+>     chanceOfCmc,           -- Int -> [Card] -> Double
+>     chanceOfCard,          -- Card -> [Card] -> Double
+>     chanceOfCards,         -- [Card] -> [Card] -> Double
 
 Short Demos:
 
->     playsDemo,            -- Shows example output from showPlays
->     readAndShowCards,     -- Reads from cards.mtg and outputs them.
->     readAndShowDecklist   -- Reads decklist and matches it against cards.mtg
+>     costDemo,              -- Shows a breakdown of the costs in the test DB
+>     playsDemo,             -- Shows example output from showPlays
+>     readAndShowCards,      -- Reads from cards.mtg and outputs them.
+>     readAndShowDecklist,   -- Reads decklist and matches it against cards.mtg
+>     drawSevenDemo          -- Reads the decklist, shuffles, and draws 7
+>     drawSevenNextIsPlainsDemo -- Shows the odds that you'll get a Plains
+>     draw7ShowPlays         -- Shows the available plays on a fresh draw
                         
 >  ) where
 
