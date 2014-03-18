@@ -534,6 +534,15 @@ DETERMINING PLAYS
 > enumPlays ps  = zip [1..(length ps)] ps
 
 
+> takeTurn        :: ([Card],[Card],[Card]) -> ([Card],[Card],[Card])
+> takeTurn (d,b,h) = ((snd afterDraw), newBattle, (snd afterPlay))
+>             where afterDraw = draw d
+>                   startHand = (fst (afterDraw)):h
+>                   mana = totalMana b
+>                   topPlay = head $ efficientPlays startHand mana
+>                   afterPlay = makePlay startHand topPlay
+>                   newBattle = b++(fst afterPlay)
+
 
 DETERMINING COST BREAKDOWN
 --------------------------
@@ -663,8 +672,8 @@ MISC TEST CODE
 > draw7ShowPlays = do (hand, deck) <- draw7FromDeck "weenie.deck"
 >                     putStrLn "Hand:\n-----"
 >                     showCardList hand
->                     putStrLn "\nPlays:"
->                     showPlays $ possiblePlays hand []
+>                     putStrLn "\nBest Plays:\n----"
+>                     showPlays $ efficientPlays hand []
 
 > alignTest :: IO ()
 > alignTest = readFile "cards.mtg" >>= (putStr . alignCosts)
